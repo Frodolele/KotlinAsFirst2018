@@ -106,7 +106,21 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String,Int>): Map<Int,List<String>>{
+    var new_grades: MutableMap<Int, List<String>> = mutableMapOf<Int,List<String>>()
+    var value_list: MutableList<String> = ArrayList()
+    for ((key, value) in grades){
+        for ((subKey, subValue) in grades){
+            if (value==subValue){
+                value_list.add(subKey)
+            }
+        }
+        new_grades[value] = value_list.toList()
+        value_list.clear()
+    }
+    return new_grades.toMap()
+}
+
 
 /**
  * Простая
@@ -118,7 +132,16 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean{
+    var pointer: Boolean = false;
+    for((key, value) in b){
+        for((keyA, valueA) in a){
+            pointer = key==keyA && b[key] == a[keyA]
+        }
+    }
+    return pointer
+}
+
 
 /**
  * Средняя
@@ -130,7 +153,25 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO()
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double>{
+
+    var newStockPrices: MutableList<Pair<String, Double>> = ArrayList()
+
+    for ((item, value) in stockPrices){
+        var sum_value = 0.0
+        var count = 0.0
+        for((itemSub, valueSub) in stockPrices){
+            if (item == itemSub){
+                sum_value += valueSub
+                count++
+            }
+        }
+        newStockPrices.add(Pair(item, sum_value/count))
+    }
+    val average: Map<String, Double> = newStockPrices.toMap()
+    return average
+}
+
 
 /**
  * Средняя
@@ -273,3 +314,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+
+fun main() {
+    
+}

@@ -71,7 +71,34 @@ fun main(args: Array<String>) {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String{
+    val parts = str.split(" ")
+    val day = parts[0]
+    val month = -1
+    val year = parts[2]
+    val february = (parts[1] == "февраля" && !(parts[0] in 0..28))
+
+    if (!(parts[0].toInt() in 0..32) || february){
+        throw "Data is incorrect!"
+    }
+
+    month = when parts[1]{
+        "января" -> 01
+        "февраля" -> 02
+        "март" -> 03
+        "апрель" -> 04
+        "май" -> 05
+        "июнь" -> 06
+        "июль" -> 07
+        "август" -> 08
+        "сентябрь" -> 09
+        "октябрь" -> 10
+        "ноябрь" -> 11
+        "декабрь" -> 12
+    }
+
+    return String.format("%02d.%02d.%04d", day, month, year)
+}
 
 /**
  * Средняя
@@ -208,3 +235,7 @@ fun fromRoman(roman: String): Int = TODO()
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun main() {
+    dateStrToDigit("28 февраля 2019")
+}

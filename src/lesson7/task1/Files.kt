@@ -1,7 +1,3 @@
-@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
-
-package lesson7.task1
-
 import java.io.File
 
 /**
@@ -22,6 +18,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
         if (line.isEmpty()) {
             outputStream.newLine()
             if (currentLineLength > 0) {
+                println(currentLineLength)
                 outputStream.newLine()
                 currentLineLength = 0
             }
@@ -30,6 +27,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
         for (word in line.split(" ")) {
             if (currentLineLength > 0) {
                 if (word.length + currentLineLength >= lineLength) {
+                    println(currentLineLength)
                     outputStream.newLine()
                     currentLineLength = 0
                 }
@@ -54,7 +52,76 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+
+/**
+ *
+ * Так же задачу можно реализовать немного иначе, хз как лучше: можно просто посчитать кол-во вхождений в исходном файле,
+ * завести отдельную переменную счётчик и по этому счётчику добавлять пары ключ - значение.
+ * Звучит проще и реализация тоже, думаю, затрачивает меньше ресурсов и более оптимальна.
+ *
+ */
+
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int>{
+    val reader = File(inputName).bufferedReader()
+    val stringCount = mutableMapOf<String,Int>()
+    var tempList = mutableListOf<String>()
+
+    for (line in reader.readLines()){
+        tempList.add(line)
+        stringCount[line] = 0
+    }
+    reader.close()
+
+    for (string in tempList) {
+        for (line in substrings) {
+            if (string.equals(line, ignoreCase = true)) {
+                for ((key, value) in stringCount) {
+                    if (line.equals(key, ignoreCase = true)) {
+                        println("Tir tir tir")
+                        var count = value
+                        stringCount[key] = ++count
+                    }
+                }
+            }
+        }
+    }
+
+    return stringCount
+}
+
+//fun countSubstringsNotMy(inputName: String, substrings: List<String>): Map<String, Int> {
+//    val result = mutableMapOf<String, Int>()
+//    val inputNameToLowerCase = File(inputName).readText().toLowerCase()
+//    for (word in substrings) {
+//        val wordToLowerCase = word.toLowerCase()
+//        var counter = 0
+//        var index = 0
+//        var position = 0
+//        while (index != -1) {
+//            index = inputNameToLowerCase.indexOf(wordToLowerCase, position)
+//            if (index != -1) {
+//                position = index + 1
+//                counter++
+//            } else break
+//        }
+//        result[word] = counter
+//    }
+//    return result
+//}
+
+fun main() {
+    val substrings: List<String> = listOf("string_one", "String_two", "String_three", "String_Four", "string_five")
+    val test = countSubstrings("C:\\Users\\makst\\IdeaProjects\\lesson_new\\src\\inputName.txt", substrings)
+    for ((key, value) in test){
+        println("$key  =  $value")
+    }
+
+//    val testNotMy = countSubstringsNotMy("C:\\Users\\makst\\IdeaProjects\\lesson_new\\src\\inputName.txt", substrings)
+//    for ((key, value) in testNotMy){
+//        println("$key = $value")
+//    }
+
+}
 
 
 /**
@@ -243,15 +310,15 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -294,67 +361,67 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <ul>
-      <li>
-        Утка по-пекински
-        <ul>
-          <li>Утка</li>
-          <li>Соус</li>
-        </ul>
-      </li>
-      <li>
-        Салат Оливье
-        <ol>
-          <li>Мясо
-            <ul>
-              <li>
-                  Или колбаса
-              </li>
-            </ul>
-          </li>
-          <li>Майонез</li>
-          <li>Картофель</li>
-          <li>Что-то там ещё</li>
-        </ol>
-      </li>
-      <li>Помидоры</li>
-      <li>
-        Фрукты
-        <ol>
-          <li>Бананы</li>
-          <li>
-            Яблоки
-            <ol>
-              <li>Красные</li>
-              <li>Зелёные</li>
-            </ol>
-          </li>
-        </ol>
-      </li>
-    </ul>
-  </body>
+<body>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>
+Или колбаса
+</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>
+Фрукты
+<ol>
+<li>Бананы</li>
+<li>
+Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -381,28 +448,31 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
+
+
+
 
 
 /**
@@ -411,16 +481,16 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
@@ -428,4 +498,3 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
-

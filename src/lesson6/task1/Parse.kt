@@ -148,7 +148,10 @@ fun bestLongJump(jumps: String): Int = TODO()
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    val matchResult = Regex("""\d+(?= [%+-]*\+""").findAll(jumps)
+    return matchResult.asSequence().map { it.value.toInt() }.max() ?: -1
+}
 
 /**
  * Сложная
@@ -238,4 +241,5 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TO
 
 fun main() {
     dateStrToDigit("28 февраля 2019")
+    bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %")
 }

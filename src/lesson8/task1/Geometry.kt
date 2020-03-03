@@ -1,12 +1,13 @@
-@file:Suppress("UNUSED_PARAMETER")
-package lesson8.task1
 
-import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+
+fun sqr(x: Double) = x * x
+
+fun sqr(x: Int) = x * x
 /**
  * Точка на плоскости
  */
@@ -17,6 +18,10 @@ data class Point(val x: Double, val y: Double) {
      * Рассчитать (по известной формуле) расстояние между двумя точками
      */
     fun distance(other: Point): Double = sqrt(sqr(x - other.x) + sqr(y - other.y))
+
+    fun pointMid(other: Point): Point{
+        return Point(((x + other.x)/2), ((y + other.y)/2))
+    }
 }
 
 /**
@@ -76,20 +81,30 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    fun distance(other: Circle): Double{
+
+        return (center.distance(other.center)) - (radius + other.radius)
+    }
 
     /**
      * Тривиальная
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = TODO()
+    fun contains(p: Point): Boolean{
+        return p.distance(center) <= sqr(radius)
+    }
 }
 
 /**
  * Отрезок между двумя точками
  */
 data class Segment(val begin: Point, val end: Point) {
+
+    fun length(): Double{
+        return begin.distance(end)
+    }
+
     override fun equals(other: Any?) =
             other is Segment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
 
@@ -103,7 +118,25 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment{
+    if (points.size < 2) throw IllegalArgumentException()
+
+    var point1 = points[0]
+    var point2 = points[1]
+    var max = point1.distance(point2)
+
+    for (i in 0 until points.size - 1){
+        for (j in i+1 until points.size){
+            if ((points[i].distance(points[j])) > max) {
+                max = points[i].distance(points[j])
+                point1 = points[i]
+                point2 = points[j]
+            }
+        }
+    }
+
+    return Segment(point1, point2)
+}
 
 /**
  * Простая
@@ -111,7 +144,11 @@ fun diameter(vararg points: Point): Segment = TODO()
  * Построить окружность по её диаметру, заданному двумя точками
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
-fun circleByDiameter(diameter: Segment): Circle = TODO()
+fun circleByDiameter(diameter: Segment): Circle{
+    val center: Point = diameter.begin.pointMid(diameter.end)
+
+    return Circle(center, diameter.length()/2)
+}
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -197,4 +234,3 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle = TODO()
-
